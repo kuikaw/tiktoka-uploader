@@ -69,29 +69,47 @@ def Url_In_Database(url) -> bool:
 
 
 def Query_UploadSetting_In_db(id) -> list:
-    data = dbsession.query(UploadSetting).filter(UploadSetting.id == id).first()
-    if data:
+    if (
+        data := dbsession.query(UploadSetting)
+        .filter(UploadSetting.id == id)
+        .first()
+    ):
         return data
     else:
         return []
 def Query_undone_videos_in_channel(uploadsessionid) -> list:
-    data = dbsession.query(UploadSession).filter(UploadSession.id == uploadsessionid,UploadSession.status == False).all()
-    if data:
+    if (
+        data := dbsession.query(UploadSession)
+        .filter(
+            UploadSession.id == uploadsessionid, UploadSession.status == False
+        )
+        .all()
+    ):
         return data
     else:
         return []
 def Query_video_status_in_channel(videopath,channelname,settingid) -> list:
     print(videopath,channelname,settingid,'????????????????')
-    data = dbsession.query(UploadSession).filter(UploadSession.videopath == videopath,UploadSession.channelname == channelname,UploadSession.uploadSettingid==settingid).first()
-    if data:
+    if (
+        data := dbsession.query(UploadSession)
+        .filter(
+            UploadSession.videopath == videopath,
+            UploadSession.channelname == channelname,
+            UploadSession.uploadSettingid == settingid,
+        )
+        .first()
+    ):
         status=data.status
         return True,status
     else:
         return False,False
 def Query_subdomain_In_db(url) -> list:
-    data = dbsession.query(UploadSession).filter(UploadSession.domain == url).first()
-    if data:
-        subdomains=data.subdomains 
+    if (
+        data := dbsession.query(UploadSession)
+        .filter(UploadSession.domain == url)
+        .first()
+    ):
+        subdomains=data.subdomains
         return json.loads(subdomains)
     else:
         return []
@@ -120,8 +138,11 @@ def Update_uploadsetting_In_Db(setting,channelname) -> None:
     return settingid
 
 def Query_urls_list_In_Db(url) -> list:
-    data = dbsession.query(UploadSession).filter(UploadSession.domain == url).first()
-    if data:
+    if (
+        data := dbsession.query(UploadSession)
+        .filter(UploadSession.domain == url)
+        .first()
+    ):
         urls_list=data.urls_list
         return json.loads(urls_list)
     else:
@@ -132,13 +153,10 @@ def Update_urls_list_In_Db(urls_list, url) -> None:
 # There is another less obvious way though. To save as String by json.dumps(my_list) and then while retrieving just do json.loads(my_column). But it will require you to set the data in a key-value format and seems a bit in-efficient compared to the previous solution.
 
         data.urls_list = json.dumps(urls_list)
-        dbsession.merge(data)
     else:
         data=UploadSession()
         data.urls_list = urls_list
-        dbsession.merge(data)        
-
-
+    dbsession.merge(data)
     # and don't forget to commit your changes
     try:
         dbsession.commit()

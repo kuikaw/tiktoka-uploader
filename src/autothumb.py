@@ -31,7 +31,7 @@ def get_random_filename(ext):
 def create_thumbnail(filename):
     print('Processing:', filename)
 
-    jpg_name = '%s.jpg' % filename
+    jpg_name = f'{filename}.jpg'
     if os.path.exists(jpg_name):
         print('Thumbnail assumed exists!')
         return
@@ -39,7 +39,7 @@ def create_thumbnail(filename):
     _, ext = os.path.splitext(filename)
     random_filename = get_random_filename(ext)
     random_filename_2 = get_random_filename(ext)
-    print('Rename as %s to avoid decode error...' % random_filename)
+    print(f'Rename as {random_filename} to avoid decode error...')
     try:
         os.rename(filename, random_filename)
         try:
@@ -51,19 +51,22 @@ def create_thumbnail(filename):
             container = av.open(random_filename_2)
 
         metadata = [
-            "File name: %s" % filename,
-            "Size: %d bytes (%.2f MB)" % (container.size, container.size / 1048576),
-            "Duration: %s" % get_time_display(container.duration // 1000000),
+            f"File name: {filename}",
+            "Size: %d bytes (%.2f MB)"
+            % (container.size, container.size / 1048576),
+            f"Duration: {get_time_display(container.duration // 1000000)}",
         ]
+
 
         start = min(container.duration // (IMAGE_PER_ROW * IMAGE_ROWS), 5 * 1000000)
         end = container.duration - start
-        time_marks = []
-        for i in range(IMAGE_ROWS * IMAGE_PER_ROW):
-            time_marks.append(start + (end - start) // (IMAGE_ROWS * IMAGE_PER_ROW - 1) * i)
+        time_marks = [
+            start + (end - start) // (IMAGE_ROWS * IMAGE_PER_ROW - 1) * i
+            for i in range(IMAGE_ROWS * IMAGE_PER_ROW)
+        ]
 
         images = []
-        for idx, mark in enumerate(time_marks):
+        for mark in time_marks:
             container.seek(mark)
             for frame in container.decode(video=0):
                 images.append((frame.to_image(), mark // 1000000))
@@ -109,9 +112,9 @@ if __name__ == "__main__":
     p = os.path.abspath(p)
 
     for root, dirs, files in os.walk(p):
-        print('Switch to root %s...' % root)
+        print(f'Switch to root {root}...')
         os.chdir(root)
+        ext_regex = r"\.(mov|mp4|mpg|mov|mpeg|flv|wmv|avi|mkv)$"
         for file in files:
-            ext_regex = r"\.(mov|mp4|mpg|mov|mpeg|flv|wmv|avi|mkv)$"
             if re.search(ext_regex, file, re.IGNORECASE):
                 create_thumbnail(file)

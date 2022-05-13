@@ -116,8 +116,8 @@ def main():
             text2.insert(END, 'CONVERTING THE PROGRAM ALONG WITH THE TERMINAL\n')
             text2.config(state = DISABLED)
             os.chdir(inp1)
-            os.system('pyinstaller --onefile '+inp2)
-        elif int(terminal) == 1 and len(icons) != 0:
+            os.system(f'pyinstaller --onefile {inp2}')
+        elif int(terminal) == 1:
             text2.config(state = NORMAL)
             text2.insert(END, 'CONVERTING THE PROGRAM ALONG WITH THE TERMINAL AND WITH ICON\n')
             text2.config(state = DISABLED)
@@ -129,8 +129,8 @@ def main():
             text2.insert(END, 'CONVERTING THE PROGRAM WITHOUT THE TERMINAL\n')
             text2.config(state = DISABLED)
             os.chdir(inp1)
-            os.system('pyinstaller --onefile -w '+inp2)
-        elif int(terminal) == 2 and len(icons) != 0:
+            os.system(f'pyinstaller --onefile -w {inp2}')
+        elif int(terminal) == 2:
             text2.config(state = NORMAL)
             text2.insert(END, 'CONVERTING THE PROGRAM WITHOUT THE TERMINAL AND WITH ICON\n')
             text2.config(state = DISABLED) 
@@ -196,13 +196,13 @@ def main():
         inp1 = words.get()
         inp2 = file_words.get()
         print(inp1, inp2)
-        print(str(var.get()))
+        print(var.get())
         text2.config(state=NORMAL)
         text2.insert(END, 'RUNNING THE PROGRAM\n')
         text2.insert(END, 'COMPILED SUCCESSFULLY!\n')
         text2.config(state=DISABLED)
         os.chdir(inp1)
-        os.system('python '+inp2)
+        os.system(f'python {inp2}')
     def load_existing_config():
         text1.config(state=NORMAL)
         p = sub.Popen('pip install pyinstaller',stdout=sub.PIPE,stderr=sub.PIPE, shell= True)
