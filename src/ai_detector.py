@@ -40,14 +40,18 @@ class AiThumbnailGenerator:
 
         sorted(main_scene, key=lambda x: x[0])
 
-        result = []
         if len(main_scene) > 3:
-            main_scene = main_scene[0:3]
-        for scene in main_scene:
-            result.append(scene[-1])
+            main_scene = main_scene[:3]
+        result = [scene[-1] for scene in main_scene]
         print(self.filename,'==========')
-        save_images(result, self.video_manager, num_images=1,
-                    image_name_template=self.filename+'-'+'$SCENE_NUMBER', output_dir=self.filename)
+        save_images(
+            result,
+            self.video_manager,
+            num_images=1,
+            image_name_template=f'{self.filename}-$SCENE_NUMBER',
+            output_dir=self.filename,
+        )
+
 
         return
 
